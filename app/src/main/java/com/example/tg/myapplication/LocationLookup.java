@@ -34,7 +34,7 @@ public class LocationLookup {
                 locationA.setLatitude(Double.parseDouble(lat));
                 locationA.setLongitude(Double.parseDouble(lon));
                 distance = locationA.distanceTo(location);
-                if(distance <= 20.0005){
+                if(distance <= 10.0005){
                     return i+1;
                 }
             }

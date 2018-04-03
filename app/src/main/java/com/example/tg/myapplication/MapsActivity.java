@@ -56,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double finalTime = 0;
     private int forwardTime = 5000;
     public static int oneTimeOnly = 0;
+    private static int AudioCondition=0;
     private  static MediaPlayer mediaPlayer = new MediaPlayer();
 
     @SuppressLint("MissingPermission")
@@ -68,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         seekbar = (SeekBar) findViewById(R.id.seekBar);
         seekbar.setClickable(false);
         b3.setEnabled(false);
+        b2.setEnabled(false);
         tx1 = (TextView) findViewById(R.id.textView2);
         tx2 = (TextView) findViewById(R.id.textView3);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -85,6 +87,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mediaPlayer.start();
+                b3.setEnabled(false);
+                b2.setEnabled(true);
 
                 finalTime = mediaPlayer.getDuration();
                 startTime = mediaPlayer.getCurrentPosition();
@@ -112,8 +116,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mediaPlayer.pause();
-//                b2.setEnabled(false);
-//                b3.setEnabled(true);
+                b2.setEnabled(false);
+                b3.setEnabled(true);
             }
         });
 
@@ -145,14 +149,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 HttpURLConnection test1 = new HttpURLConnection();
                 LocationLookup asd = new LocationLookup();
                 int nare = asd.lookup(location,test);
-                if(nare >=1) {
+                if(nare >=1 && AudioCondition == 0) {
                     mediaPlayer = test1.StartDoecnt("http://35.184.38.112/" + nare + ".mp3");
-                    b3.setEnabled(true);
+                    mediaPlayer.start();
+                    AudioCondition++;
+                    b2.setEnabled(true);
                 }
                 mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mp) {
                         //여기다 완료 후 코드 작성
                         b3.setEnabled(false);
+                        AudioCondition = 0;
                     }
                 });
 
