@@ -1,5 +1,6 @@
 package com.example.tg.myapplication;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 
@@ -22,11 +23,9 @@ public class LocationLookup {
     String TAG_JSON="webnautes";
 
     double distance;
-    public int lookup(Location location, String mJsonString){
+    public String lookup(Location location, JSONArray jsonArray){
         try {
             Location locationA = new Location("point A");
-            JSONObject jsonObject = new JSONObject(mJsonString);
-            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject ddObject = jsonArray.getJSONObject(i);
                 String lat = ddObject.getString("latitude");
@@ -34,14 +33,15 @@ public class LocationLookup {
                 locationA.setLatitude(Double.parseDouble(lat));
                 locationA.setLongitude(Double.parseDouble(lon));
                 distance = locationA.distanceTo(location);
-                if(distance <= 10.0005){
-                    return i+1;
+                if(distance <= 2.0005 && ddObject.getString("element_code").equals("5")){
+                    String priority = ddObject.getString("element_priority");
+                    return priority;
                 }
             }
-            return 0;
+            return null;
         }catch (Exception e){
             e.printStackTrace();
-            return 404;
+            return "error";
         }
     }
 }

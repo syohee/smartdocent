@@ -14,11 +14,11 @@ import java.util.HashMap;
 
 
 public class test  {
-
     private static String TAG = "phpquerytest";
     private static final String TAG_JSON="webnautes";
-    private static final String TAG_second_cultural_code = "second_cultural_code";
-    private static final String TAG_cultural_photo = "cultural_photo";
+    private static final String TAG_element_detail_code = "element_detail_code";
+    private static final String TAG_element_priority = "element_priority";
+    private static final String TAG_element_code = "element_code";
     private static final String TAG_latitude ="latitude";
     private static final String TAG_longitude ="longitude";
     public static ArrayList<HashMap<String, String>> mArrayList = new ArrayList<>();

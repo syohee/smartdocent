@@ -1,4 +1,12 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">SMART DOCENT</string>
+    <string name="ok">OK</string>
+    <string name="todo">TODO</string>
+    <string name="idText">아이디</string>
+    <string name="pwText">비밀번호</string>
+    <string name="loginBtn">로그인</string>
+    <string name="joinBtn">회원가입</string>
+    <string name="nameText">이름</string>
+    <string name="pwCkText">비밀번호 확인</string>
     <string name="title_activity_maps">Map</string>
 </resources>

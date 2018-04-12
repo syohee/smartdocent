@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -25,7 +26,9 @@
         android:layout_height="match_parent"
         android:clickable="false"
         android:enabled="false"
-        tools:context="com.example.tg.myapplication.MapsActivity" />
+        tools:context="com.example.tg.myapplication.MapsActivity" >
+
+    </fragment>
 </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -86,6 +89,44 @@
             android:paddingLeft="200dp"
             android:text="Small Text"
             android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom">
+    <ImageButton
+        android:id="@+id/cultBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="3"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/culture"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter" />
+
+    <ImageButton
+        android:id="@+id/hoBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="3"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitCenter"
+        android:background="@android:color/transparent"
+        android:src="@drawable/home"
+        android:tint="@android:color/black" />
+
+    <ImageButton
+        android:id="@+id/myPaBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_weight="3"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mypage" />
     </LinearLayout>
 
 
