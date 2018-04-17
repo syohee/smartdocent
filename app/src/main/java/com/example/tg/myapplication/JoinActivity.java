@@ -40,13 +40,14 @@ public class JoinActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... strings) {
-            String  param   =   "id = " + id + "&pw = " + pw + "";
+            String  param   =   "id =" + id + "&pw =" + pw;
 
             try {
-                URL             serverURL   =   new URL("http://127.25.1.141/joinPage.php");
+                URL serverURL   =   new URL("http://10.0.2.2/dashboard/joinPage.php");
                 HttpURLConnection   conn    =   (HttpURLConnection) serverURL.openConnection();
-
-                conn.setRequestMethod("GET");
+                conn.setReadTimeout(5000);
+                conn.setConnectTimeout(5000);
+                conn.setRequestMethod("POST");
                 conn.setDoInput(true);
                 conn.connect();
 
@@ -56,17 +57,30 @@ public class JoinActivity extends AppCompatActivity {
                 outputStream.flush();
                 outputStream.close();
 
-                InputStream     inputStream     =   conn.getInputStream();
-                BufferedReader  bufferedReader  =   new BufferedReader(new InputStreamReader(inputStream));
-                String          data            =   "";
-                String          line            =   null;
-                StringBuffer    stringBuffer    =   new StringBuffer();
 
-                while((line = bufferedReader.readLine()) != null) {
-                    stringBuffer.append(line + "\n");
+                int responseStatusCode = conn.getResponseCode();
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = conn.getInputStream();
+                }
+                else{
+                    inputStream = conn.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
                 }
 
-                data    =   stringBuffer.toString().trim();
+
+                bufferedReader.close();
+
+
+                return sb.toString();
 
             } catch(Exception ex){
                 ex.printStackTrace();

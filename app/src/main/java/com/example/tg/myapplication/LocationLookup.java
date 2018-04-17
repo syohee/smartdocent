@@ -37,6 +37,12 @@ public class LocationLookup {
                     String priority = ddObject.getString("element_priority");
                     return priority;
                 }
+                else if(distance <= 2.0005 && ddObject.getString("element_code").equals("3")){
+                     return "AR";
+                }
+                else if(distance <= 2.0005 && ddObject.getString("element_code").equals("2")){
+                    return "QR";
+                }
             }
             return null;
         }catch (Exception e){

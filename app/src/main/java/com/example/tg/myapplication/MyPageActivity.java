@@ -34,15 +34,14 @@ public class MyPageActivity extends AppCompatActivity {
         });
 
         // 회원 가입 버튼
-      /*  Button joinBtn = (Button)findViewById(R.id.joinBtn);
+       Button joinBtn = (Button)findViewById(R.id.joinBtn);
         joinBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent joinIntent = new Intent(getApplicationContext(), JoinActivity.class);
                 startActivity(joinIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
-        });*/
-
+        });
         // 로그인
 
     }

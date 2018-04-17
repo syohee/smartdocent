@@ -2,6 +2,7 @@ package com.example.tg.myapplication;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,27 +13,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-//JK변경
-public class test  {
-    private static String TAG = "phpquerytest" +
-            "";
-    public static ArrayList<HashMap<String, String>> mArrayList = new ArrayList<>();
-    String mJsonString ;
+public class JKDB {
+    private static String TAG = "phpquerytest";
 
-    test(){
+    JKDB(){
     }
 
-    public String test(String mJsonString){
-        try {
-            GetData task = new GetData();
+       public String test(){
+           try {
+                GetData task = new GetData();
 
-            return task.execute(mJsonString).get();
+                    return task.execute().get();
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                    return "e";
+                }
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return "e";
-        }
-    }
 
 
     public class GetData extends AsyncTask<String, Void, String>{
@@ -45,18 +42,11 @@ public class test  {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-//            if (result == null){  }
-//
-//            else {
-//                mJsonString = result;
-//                showResult();
-//            }
         }
         @Override
 
         protected String doInBackground(String... params) {
-            String serverURL = "http://35.184.38.112/JKDBconn.php";
-            String postParameters = "country=" + "1";
+            String serverURL = "http://35.184.38.112/jk_DbConect1.php";
 
             try {
 
@@ -72,7 +62,6 @@ public class test  {
                 httpURLConnection.connect();
 
                 OutputStream outputStream = httpURLConnection.getOutputStream();
-                outputStream.write(postParameters.getBytes("UTF-8"));
                 outputStream.flush();
                 outputStream.close();
 

@@ -3,17 +3,45 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/projectName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/app_name"
+        android:textColor="#000000"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#000000" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:gravity="center">
         <TextView
             android:id="@+id/Route"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textSize="35dp"
-            android:text="여기는 경로가 나옵니다."/>
+            android:textSize="20dp"
+            android:text="영진전문대학"
+            android:textColor="#000000"/>
+        <android.support.v4.view.ViewPager
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#000000" />
     </LinearLayout>
 
 <LinearLayout
@@ -38,7 +66,7 @@
             android:layout_width="70dp"
             android:layout_height="50dp"
             android:text="정지"
-            android:id="@+id/button2"
+            android:id="@+id/btn_play"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/button"
             android:layout_toEndOf="@+id/button" />
@@ -49,46 +77,18 @@
             android:text="재생"
             android:id="@+id/button3"
             android:layout_alignParentBottom="true" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/seekBar"
-            android:layout_alignLeft="@+id/textview"
-            android:layout_alignStart="@+id/textview"
-            android:layout_alignRight="@+id/textview"
-            android:layout_alignEnd="@+id/textview"
-            android:layout_above="@+id/button4" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/seekBar"
-            android:layout_toLeftOf="@+id/textView"
-            android:layout_toStartOf="@+id/textView"
-            android:paddingLeft="25dp"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/seekBar"
-            android:layout_alignEnd="@+id/button4"
-            android:layout_alignRight="@+id/button4"
-            android:paddingLeft="200dp"
-            android:text="Small Text"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="AR"
+            android:id="@+id/arBtn"
+            android:layout_alignParentBottom="true" />
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:text="QR"
+            android:id="@+id/qrBtn"
+            android:layout_alignParentBottom="true" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

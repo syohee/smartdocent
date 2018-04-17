@@ -38,11 +38,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="문화재페이지" />
-        <Button
-            android:id="@+id/naStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="안내시작"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:id="@+id/listView_main_list"/>
+
 
     </LinearLayout>
 
@@ -67,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="true"
+        android:gravity="bottom"
         android:orientation="horizontal">
 
         <ImageButton
