@@ -42,19 +42,57 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ListView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/mainList"
-            android:divider="#8C8C8C"
-            android:dividerHeight="2dp"
-            android:choiceMode="singleChoice"></ListView>
+            android:orientation="vertical">
 
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewResult">
-        </TextView>-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:id="@+id/cul_view_img"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cul_view_name"
+                android:text="이름"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cul_view_addr"
+                android:text="주소"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/cul_view_expl"
+                android:text="해설"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="해설 듣기"
+                android:id="@+id/explBtn"/>
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

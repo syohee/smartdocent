@@ -108,6 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     static String route;
     static String startRoute = "순서 : ";
 
+    public static Context mContext;         // 현재 엑티비티 정보를 가져옴
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,6 +211,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         route = Culture.test("1");
         setRoute(route);
         Route.setText(startRoute);
+
+        mContext = this;
     }
 
     // 현재 문화재의 마지막 순서 가져오기
@@ -776,6 +780,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d(TAG, "showResult : ", e);
         }
 
+    }
+
+    //현재 문화재 반경 빨간색 변경
+    public void nextcultural(int priority){
+        GoogleMap googleMap = mMap;
+        ArrayList<HashMap<String, String>> explPointList =  nadb.mExplPointList;
+        for (HashMap explPoint : explPointList) {
+            Double lat = Double.parseDouble(explPoint.get("latitude").toString());
+            Double lon = Double.parseDouble(explPoint.get("longitude").toString());
+            String ele = explPoint.get("element_code").toString();
+            String pri = explPoint.get("element_priority").toString();
+            Log.d(TAG, "onAddMarker: lat : " + lat + ", lon : " + lon);
+            LatLng yj = new LatLng(lat, lon);
+            if(pri.equals(String.valueOf(priority)) && ele.equals("5")){
+                tv_marker.setText(pri);
+                googleMap.addMarker(new MarkerOptions().position(yj).title(pri)
+                        .icon(BitmapDescriptorFactory
+                                .fromBitmap(createDrawableFromView(this, marker_root_view))));
+                CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
+                        .radius(10)        // 반지름 단위 : m
+                        .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
+                        .fillColor(Color.parseColor("#ff0000"));  // 배경색
+                googleMap.addCircle(circle); // 반경 추가
+            }
+            else if(ele.equals("5")){
+                tv_marker.setText(pri);
+                mMap.addMarker(new MarkerOptions().position(yj).title(pri)
+                        .icon(BitmapDescriptorFactory
+                                .fromBitmap(createDrawableFromView(this, marker_root_view))));
+                CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
+                        .radius(10)        // 반지름 단위 : m
+                        .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
+                        .fillColor(Color.parseColor("#B2CCFF"));  // 배경색
+                mMap.addCircle(circle); // 반경 추가
+
+            }
+        }
     }
 
     public void onConnected(@Nullable Bundle bundle) {

@@ -49,5 +49,6 @@
         <activity android:name=".LangActivity"/>
         <!--<activity android:name=".RetrunActivity"/>-->
         <activity android:name=".JoinActivity"/>
+        <activity android:name=".CultureViewActivity"/>
     </application>
 </manifest>
