@@ -66,8 +66,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int DEFAULT_ZOOM = 18;
     private static GoogleMap mMap;
     private static final String TAG = MapsActivity.class.getSimpleName();
-    public String first_cultural_code = "1"; // 1차 문화재 코드
-    private Button b1, b2, b3, b4, b5; // 재생 정지 버튼*
+
+    public String cultural_code = "1";      // 1차 문화재 코드
+    public String language_code = "1";      // 언어코드
+
+    private Button b2, b3, b4, b5;          // 재생 정지 버튼*
     private ImageButton homeBt, currentBt, mypageBt;
     private static MediaPlayer music; // 스트리밍 객체 생성
     static String url = "http://35.184.38.112/";
@@ -85,11 +88,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     static String nowPoint = "0";           // 현재 해설 포인트
     static String nowPointCode = "0";       // 현재 포인트의 요소 코드 ( ar인지 qr인지 체크)
     static String point = "0";              // 사용자위치로 찾은 해설 포인트 코드
+
+    static String userStatus = "";          // 사용자 상태
+    
+    static int prepriority = 0;             // 이전 해설포인트 순서
     static int priority = 0;                // 현재 해설포인트 순서
-    static int maxPriority = 4;             // 현재 문화재의 마지막 순서 나중에 디비에서 계산해서 가져와야됨
+    static int maxPriority = 4;             // 현재 문화재의 마지막 순서 //나중에 디비에서 계산해서 가져와야됨
+    
     static String ete = "0";                // 예상 소요 시간
     static Boolean section_check = true;    // 구간해설파일 상태
-    String element_code = "6";
     static String userLat;                  // 사용자의 현재 위도
     static String userLon;                  // 사용자의 현재 경도
     static Double nextLat;                  // 다음 해설포인트 위도
@@ -118,6 +125,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         b5.setEnabled(false); //qr버튼 비활성화
         nadb = new NarrationAlgorismDB();
 
+        // 현재 문화재 코드
+        // 선택된 언어 코드
+
         // 미디어 플레이어 객체 생성, 스트리밍 설정
         music = new MediaPlayer();
         music.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -129,8 +139,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map); // 구글 지도 맵 api
         mapFragment.getMapAsync(this); // 현재 엑티비티에 구글지도 앱 띄우기
         GpsPermissionCheckForMashMallo(); // 권한 확인
-//        Log.d("Main", "onCreate");
-        getFileName();
+
+        getGuideStart();        // 현재 문화재의 안내시작 멘트 가져오기
+        getEndPriority();       // 현재 문화재의 마지막 순서 가져오기
+
         // 현재위치 서비스 매니저
         mLM = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         b3.setOnClickListener(new View.OnClickListener() { // 재생버튼 클릭시
@@ -149,7 +161,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
              if(!status.equals("stop"))     // 정지상태에서는 일시정지 불가능
                 music.pause();
              status="pause";
-//             fileChange = "no";
              b3.setEnabled(true);
             }
         });
@@ -190,17 +201,64 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        TextView Route;                     //JK변경
-        test Culture;                       //JK변경
+        TextView Route;
+        test Culture;
         Route = (TextView) findViewById(R.id.Route); // 경로보여주기
 
-
-        Culture = new test();                          //JK변경
-        route = Culture.test("1");         //JK변경
-        setRoute(route);                                //JK변경
-        Route.setText(startRoute);                      //JK변경
+        Culture = new test();
+        route = Culture.test("1");
+        setRoute(route);
+        Route.setText(startRoute);
     }
 
+    // 현재 문화재의 마지막 순서 가져오기
+    public void getEndPriority(){
+        NarrationAlgorismDB.GetEndPriority gec = nadb.new GetEndPriority();
+        try {
+            String result = gec.execute(cultural_code).get();
+            if(result != null){
+                nadb.resultString = result;
+                nadb.mGetEndPriorityList = new ArrayList<>();
+                nadb.getEndPriorityResult();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+    // 경로 이탈 멘트 파일 가져오기
+    public void getWarning(){
+        NarrationAlgorismDB.GetWarning gec = nadb.new GetWarning();
+        try {
+            String result = gec.execute(cultural_code, language_code).get();
+            if(result != null){
+                nadb.resultString = result;
+                nadb.mGetWarningList = new ArrayList<>();
+                nadb.getWarningResult();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+    // 안내 종료 멘트 파일 가져오기
+    public void getGuideEnd(){
+        NarrationAlgorismDB.GetGuideEnd gec = nadb.new GetGuideEnd();
+        try {
+            String result = gec.execute(cultural_code, language_code).get();
+            if(result != null){
+                nadb.resultString = result;
+                nadb.mGuideEndList = new ArrayList<>();
+                nadb.getGuideEndResult();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
     // 해설 포인트 가져오기
     public void getExplPoint() {
         NarrationAlgorismDB.GetExplPoint gec = nadb.new GetExplPoint();
@@ -266,14 +324,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     // 안내 시작 파일 명 가져오기
-    public void getFileName() {
-        NarrationAlgorismDB.GetFileName gec = nadb.new GetFileName();
+    public void getGuideStart() {
+        NarrationAlgorismDB.GetGuideStart gec = nadb.new GetGuideStart();
         try {
-            String result = gec.execute(first_cultural_code, element_code).get();
+            String result = gec.execute(cultural_code, language_code).get();
             if(result != null){
                 nadb.resultString = result;
-                nadb.mFileNameList = new ArrayList<>();
-                nadb.getFileNameResult();
+                nadb.mGuideStartList = new ArrayList<>();
+                nadb.getGuideStartResult();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -345,7 +403,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             nowPoint = point;
             if (!prePoint.equals(nowPoint)) {
                 Log.d(TAG, "narration_algorism: 사용자가 새로운 해설포인트에 도착했습니다. 포인트 순서 : " + priority);
-                getFileNameNow();
+
+                if(prepriority + 1 != priority){
+                    Log.d(TAG, "narration_algorism: 사용자가 경로를 이탈했습니다.");
+                    userStatus = "off_course";
+                    // 경로 이탈 멘트 가져오기
+                    getWarning();
+                }else{
+                    // 현재 해설포인트 해설 파일 가져오기
+                    getFileNameNow();
+                }
+
                 if(!newFileCode.equals("-2")) {
                     if (status.equals("play")) {
                         Log.d(TAG, "narration_algorism: 현재 해설중인 파일의 종료지점을 찾습니다.");
@@ -360,14 +428,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         playExpl();
                     }
                 }
+
             } else {
                 Log.d(TAG, "narration_algorism: 사용자가 동일한 해설포인트 입니다. 포인트 순서 : " + priority);
-                if(status.equals("play")){}
-                else if(status.equals("pause")){}
-                else if(status.equals("stop")){
-                    Log.d(TAG, "narration_algorism: 구간해설 입니다.");
-                    // 구간해설
-                    section();
+                if (userStatus.equals("off_course")) {
+                    getFileNameNow();
+                    if (status.equals("play")) {
+                        Log.d(TAG, "narration_algorism: 현재 해설중인 파일의 종료지점을 찾습니다.");
+                        // 현재 재생시간 < min(종료지점) 쿼리
+                        getEndPoint();
+                        // 종료지점 - 현재 재생시간 -> 시간 후에 파일 종료
+
+                    } else if (status.equals("pause")) {
+                        Log.d(TAG, "narration_algorism: 해설이 일시정지 중입니다.");
+                    } else if (status.equals("stop")) {
+                        Log.d(TAG, "narration_algorism: 해설이 종료 상태 입니다.");
+                        playExpl();
+                        userStatus = "";
+                    }
+                }else{
+                    if(status.equals("play")){}
+                    else if(status.equals("pause")){}
+                    else if(status.equals("stop")){
+                        Log.d(TAG, "narration_algorism: 구간해설 입니다.");
+                        // 구간해설
+                        section();
+                    }
                 }
             }
             if(nowPointCode.equals("3")){   // ar존임
@@ -414,7 +500,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }else{// 다음 해설 포인트 없음
             Log.d(TAG, "section: 다음 해설포인트가 없습니다.");
             // 종료 멘트 가져오기
+            getGuideEnd();
             // 종료 멘트 재생
+            playExpl();
         }
     }
 

@@ -23,15 +23,240 @@ import java.util.HashMap;
 public class NarrationAlgorismDB {
     private static String TAG = "NarrationAlgorism";
     private static final String TAG_JSON = "smartdocent";
-//    private String urlIP = "http://35.184.38.112/";       // 서버
-    private String urlIP = "http://172.25.1.62/";           // 로컬
+    private String urlIP = "http://35.184.38.112/";       // 서버
+//    private String urlIP = "http://192.168.1.3/";           // 로컬
     String resultString;
     public static ArrayList<HashMap<String, String>> mExplPointList;
     public static ArrayList<HashMap<String, String>> mArrayList;
-    public static ArrayList<HashMap<String, String>> mFileNameList;
+    public static ArrayList<HashMap<String, String>> mGuideStartList;
     public static ArrayList<HashMap<String, String>> mFileNameNowList;
     public static ArrayList<HashMap<String, String>> mEndPointList;
     public static ArrayList<HashMap<String, String>> mSectionList;
+    public static ArrayList<HashMap<String, String>> mGuideEndList;
+    public static ArrayList<HashMap<String, String>> mGetWarningList;
+    public static ArrayList<HashMap<String, String>> mGetEndPriorityList;
+
+    // cultural_code로 현재 문화재 마지막 순서 가져오기
+    class GetEndPriority extends AsyncTask<String, Void, String> {
+        String errorString = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            String cultural_code = params[0];
+            String serverURL = urlIP + "mGetEndPriority.php" ;
+            String postParameters = "cultural_code=" + cultural_code;
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                return sb.toString().trim();
+            } catch (Exception e) {
+                Log.d(TAG, "getEndPriority/doInBackground: 예외가 발생했습니다.");
+                errorString = e.toString();
+                Log.i(TAG, "doInBackground: " + errorString);
+                return null;
+            }
+        }
+    }
+
+    public void getEndPriorityResult(){
+        try {
+            JSONObject jsonObject = new JSONObject(resultString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for(int i=0; i < jsonArray.length(); i++) {
+                JSONObject item = jsonArray.getJSONObject(i);
+                String endPriority = item.getString("endPriority");
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("endPriority", endPriority);
+
+                mGetEndPriorityList.add(hashMap);
+            }
+            MapsActivity.maxPriority = Integer.parseInt(mGetEndPriorityList.get(0).get("endPriority"));
+        }catch (JSONException e){
+            Log.d(TAG, "getEndPriorityResult: ", e);
+        }
+    }
+
+    // cultural_code, language_code 로 경로 이탈 멘트 가져오기
+    class GetWarning extends AsyncTask<String, Void, String> {
+        String errorString = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            String cultural_code = params[0];
+            String language_code = params[1];
+            String serverURL = urlIP + "mGetWarning.php" ;
+            String postParameters = "cultural_code=" + cultural_code + "&language_code=" + language_code;
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                return sb.toString().trim();
+            } catch (Exception e) {
+                Log.d(TAG, "getWarning/doInBackground: 예외가 발생했습니다.");
+                errorString = e.toString();
+                Log.i(TAG, "doInBackground: " + errorString);
+                return null;
+            }
+        }
+    }
+
+    public void getWarningResult(){
+        try {
+            JSONObject jsonObject = new JSONObject(resultString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for(int i=0; i < jsonArray.length(); i++) {
+                JSONObject item = jsonArray.getJSONObject(i);
+                String data_file_name = item.getString("data_file_name");
+                String data_file_code = item.getString("data_file_code");
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("data_file_name", data_file_name);
+                hashMap.put("data_file_code", data_file_code);
+
+                mGetWarningList.add(hashMap);
+            }
+            MapsActivity.newFileName = mGetWarningList.get(0).get("data_file_name");
+            MapsActivity.newFileCode = mGetWarningList.get(0).get("data_file_code");
+            Log.d(TAG, "getWarningResult: 경고 파일 명 : " + MapsActivity.newFileName);
+            Log.d(TAG, "getWarningResult: 경고 파일 코드 : " + MapsActivity.newFileCode);
+        }catch (JSONException e){
+            Log.d(TAG, "getWarningResult: ", e);
+        }
+    }
+
+    // cultural_code, language_code로 안내 종료 멘트 가져오기
+    class GetGuideEnd extends AsyncTask<String, Void, String> {
+        String errorString = null;
+
+        @Override
+        protected String doInBackground(String... params) {
+            String cultural_code = params[0];
+            String language_code = params[1];
+            String serverURL = urlIP + "mGetGuideEnd.php" ;
+            String postParameters = "cultural_code=" + cultural_code + "&language_code=" + language_code;
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+                bufferedReader.close();
+                return sb.toString().trim();
+            } catch (Exception e) {
+                Log.d(TAG, "getGuideEndResult/doInBackground: 예외가 발생했습니다.");
+                errorString = e.toString();
+                Log.i(TAG, "doInBackground: " + errorString);
+                return null;
+            }
+        }
+    }
+
+    public void getGuideEndResult(){
+        try {
+            JSONObject jsonObject = new JSONObject(resultString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for(int i=0; i < jsonArray.length(); i++) {
+                JSONObject item = jsonArray.getJSONObject(i);
+                String data_file_name = item.getString("data_file_name");
+                String data_file_code = item.getString("data_file_code");
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("data_file_name", data_file_name);
+                hashMap.put("data_file_code", data_file_code);
+
+                mGuideEndList.add(hashMap);
+            }
+            MapsActivity.newFileName = mGuideEndList.get(0).get("data_file_name");
+            MapsActivity.newFileCode = mGuideEndList.get(0).get("data_file_code");
+            Log.d(TAG, "getGuideEndResult: 종료 파일 명 : " + MapsActivity.newFileName);
+            Log.d(TAG, "getGuideEndResult: 종료 파일 코드 : " + MapsActivity.newFileCode);
+        }catch (JSONException e){
+            Log.d(TAG, "getGuideEndResult: ", e);
+        }
+    }
 
     // element_detail_code 로 파일 코드, 파일 명 가져오기
     class GetSection extends AsyncTask<String, Void, String> {
@@ -283,18 +508,18 @@ public class NarrationAlgorismDB {
     }
 
     // 문화재 코드, 엘리먼트 코드로 파일 코드, 파일 명 가져오기
-    class GetFileName extends AsyncTask<String, Void, String> {
+    class GetGuideStart extends AsyncTask<String, Void, String> {
         String errorString = null;
 
         @Override
         protected String doInBackground(String... params) {
             String cultural_code = params[0];
-            String element_code = params[1];
-            String serverURL = urlIP + "mGetFileName.php";
-            String postParameters = "cultural_code=" + cultural_code + "&element_code=" + element_code;
+            String language_code = params[1];
+            String serverURL = urlIP + "mGetGuideStart.php";
+            String postParameters = "cultural_code=" + cultural_code + "&language_code=" + language_code;
 
-            Log.d(TAG, "getFileName/doInBackground: 문화재코드와 요소코드로 해설파일명을 찾습니다. " +
-                    "문화재코드 : " + cultural_code + ", 요소코드 : " + element_code + "입니다.");
+            Log.d(TAG, "getGuideStart/doInBackground: 문화재코드와 언어코드로 안내 시작 해설 파일을 찾습니다. " +
+                    "문화재코드 : " + cultural_code + ", 언어코드 : " + language_code + "입니다.");
             try {
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -310,7 +535,6 @@ public class NarrationAlgorismDB {
                 outputStream.close();
 
                 int responseStatusCode = httpURLConnection.getResponseCode();
-                Log.d(TAG, "getFileName/doInBackground: 서버로 부터 응답을 받았습니다. response code : " + responseStatusCode);
 
                 InputStream inputStream;
                 if(responseStatusCode == HttpURLConnection.HTTP_OK) {
@@ -330,7 +554,7 @@ public class NarrationAlgorismDB {
                 return sb.toString().trim();
 
             } catch (Exception e) {
-                Log.d(TAG, "getFileName/doInBackground: 예외가 발생했습니다.");
+                Log.d(TAG, "getGuideStart/doInBackground: 예외가 발생했습니다.");
                 errorString = e.toString();
                 Log.i(TAG, "doInBackground: " + errorString);
                 return null;
@@ -338,7 +562,7 @@ public class NarrationAlgorismDB {
         }
     }
 
-    public void getFileNameResult(){
+    public void getGuideStartResult(){
         try {
             JSONObject jsonObject = new JSONObject(resultString);
             JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
@@ -352,13 +576,13 @@ public class NarrationAlgorismDB {
                 hashMap.put("data_file_name", data_file_name);
                 hashMap.put("data_file_code", data_file_code);
 
-                mFileNameList.add(hashMap);
+                mGuideStartList.add(hashMap);
             }
-            MapsActivity.newFileName = mFileNameList.get(0).get("data_file_name");
-            MapsActivity.newFileCode = mFileNameList.get(0).get("data_file_code");
+            MapsActivity.newFileName = mGuideStartList.get(0).get("data_file_name");
+            MapsActivity.newFileCode = mGuideStartList.get(0).get("data_file_code");
             MapsActivity.playExpl();
         }catch (JSONException e){
-            Log.d(TAG, "getFileNameResult: ", e);
+            Log.d(TAG, "getGuideStartResult: ", e);
         }
     }
 
@@ -531,19 +755,13 @@ public class NarrationAlgorismDB {
             MapsActivity.point = mArrayList.get(0).get("element_detail_code");
             String pri = mArrayList.get(0).get("element_priority");
             MapsActivity.nowPointCode = mArrayList.get(0).get("element_code");
-            if(!pri.equals("null") && !pri.equals("-1")) {   // 순서 없으면 99 -> ar이나 qr등
+            MapsActivity.prepriority = MapsActivity.priority;
+            if(!pri.equals("null") && !pri.equals("-1")) {
                 MapsActivity.priority = Integer.valueOf(pri);
             }else if(pri.equals("-1")){
                 // 데이터 없으면 -1(해설포인트 밖) -> 순서값 변경X -> 이전 해설포인트 순서고정
-            }else{
+            }else{   // 순서 없으면 99 -> ar이나 qr등
                 MapsActivity.priority = 99;
-            }
-            if(!MapsActivity.point.equals("-1")){
-//                Log.d(TAG, "getElementResult: 해설포인트 영역 안입니다. 해설포인트 코드 : " + m.point);
-//                t(m.mContext, "해설 포인트 영역 안입니다. 해설포인트 코드 : " + m.point);
-            }else{
-//                Log.d(TAG, "getElementResult: 해설포인트 영역 밖입니다.");
-//                t(m.mContext, "해설 포인트 영역 밖입니다.");
             }
         }catch (JSONException e){
             Log.d(TAG, "getElementResult: ", e);
