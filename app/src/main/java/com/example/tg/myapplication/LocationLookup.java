@@ -1,19 +1,9 @@
 package com.example.tg.myapplication;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
-
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 
 /**
  * Created by TG on 2018-04-02.

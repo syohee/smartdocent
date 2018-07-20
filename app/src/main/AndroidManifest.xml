@@ -30,7 +30,7 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/. 
         -->
-        <activity android:name=".CultureActivity">
+        <activity android:name=".LangActivity">
         <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <action android:name="android.media.AUDIO_BECOMING_NOISY"/>
@@ -42,13 +42,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
         <!--LangActivity-->
-        <!--<activity android:name=".MapsActivity"/>-->
         <activity android:name=".MapsActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".MyPageActivity"/>
-        <activity android:name=".LangActivity"/>
+        <activity android:name=".StampActivity"/>
+        <activity android:name=".LoginPageActivity"/>
+        <!--<activity android:name=".LangActivity"/>-->
+        <activity android:name=".QRActivity"/>
         <!--<activity android:name=".RetrunActivity"/>-->
+        <activity android:name=".ScanActivity"/>
         <activity android:name=".JoinActivity"/>
+        <activity android:name=".CultureActivity"/>
         <activity android:name=".CultureViewActivity"/>
     </application>
 </manifest>

@@ -2,17 +2,14 @@ package com.example.tg.myapplication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -23,7 +20,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,11 +34,12 @@ public class CultureViewActivity extends AppCompatActivity {
     private static final String TAG_IMG = "img";
     private static final String TAG_ADDR = "addr";
     private static final String TAG_EXPL = "expl";
-    private Button explBtn;
+    private ImageButton explBtn;
 
     Intent intent;
     String cul_view_id;
-    String lang_code = "1";
+    int lang_code;
+    String user_id;
     ArrayList<HashMap<String, String>> mArrayList;
     String mJsonString;
 
@@ -56,45 +54,44 @@ public class CultureViewActivity extends AppCompatActivity {
 
         intent = getIntent();
         cul_view_id = intent.getStringExtra("cul_view_id");
-        Log.d(TAG, "cul_id ->" + cul_view_id);
+        lang_code = intent.getIntExtra("lang_code", lang_code);
+        user_id = intent.getStringExtra("id");
+        Log.d(TAG, "cul_id, lang_code, user_id ->" + cul_view_id + ", " + lang_code + ", " + user_id);
 
         PostData data = new PostData();
-        data.execute(cul_view_id, lang_code);
-
-        // 메인 페이지 버튼
-        ImageButton homeBtn = (ImageButton) findViewById(R.id.homeBtn);
-        homeBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent homeIntent = new Intent(CultureViewActivity.this, MainActivity.class);
-                startActivity(homeIntent);
-                overridePendingTransition(R.anim.fade, R.anim.hold);
-            }
-        });
+        data.execute(cul_view_id, String.valueOf(lang_code));
 
         // 문화재 페이지 버튼
         ImageButton cultureBtn = (ImageButton) findViewById(R.id.cultureBtn);
         cultureBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent cultureIntent = new Intent(CultureViewActivity.this, CultureActivity.class);
+                Intent cultureIntent = new Intent(CultureViewActivity.this,MainActivity.class);
+                cultureIntent.putExtra("lang_code", lang_code);
                 startActivity(cultureIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
         });
 
+
         // 마이 페이지 버튼
         final ImageButton myPageBtn = (ImageButton) findViewById(R.id.myPageBtn);
         myPageBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent myPageIntent = new Intent(CultureViewActivity.this, MyPageActivity.class);
+                Intent myPageIntent = new Intent(CultureViewActivity.this, LoginPageActivity.class);
+                myPageIntent.putExtra("lang_cod",lang_code);
                 startActivity(myPageIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
         });
-        explBtn = (Button) findViewById(R.id.explBtn);
+
+        //안내시작 버튼
+        explBtn = (ImageButton) findViewById(R.id.explBtn);
         explBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent MapIntent = new Intent(CultureViewActivity.this, MapsActivity.class);
+                MapIntent.putExtra("lang_code", lang_code);
+                MapIntent.putExtra("id", user_id);
                 startActivity(MapIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
@@ -189,18 +186,42 @@ public class CultureViewActivity extends AppCompatActivity {
             cul_view_name = (TextView)findViewById(R.id.cul_view_name);
             cul_view_addr = (TextView)findViewById(R.id.cul_view_addr);
             cul_view_expl = (TextView)findViewById(R.id.cul_view_expl);
+            //하드코딩의 시작
+            ImageView imageView = (ImageView)findViewById(R.id.pppp);
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject item = jsonArray.getJSONObject(i);
 
                 String name = item.getString(TAG_NAME);
-                String img = item.getString(TAG_IMG);
+//                String img = item.getString(TAG_IMG);
                 String addr = item.getString(TAG_ADDR);
                 String expl = item.getString(TAG_EXPL);
 
                 cul_view_name.setText(name);
                 cul_view_addr.setText(addr);
                 cul_view_expl.setText(expl);
+
+                //이미지 하드코딩 생각하기 싫어
+                if(name.equals("영진전문대")){
+                    Drawable drawable = getResources().getDrawable(R.drawable.cau1);
+                    imageView.setImageDrawable(drawable);
+                }
+                else if(name.equals("동화사")){
+                    Drawable drawable = getResources().getDrawable(R.drawable.cau2);
+                    imageView.setImageDrawable(drawable);
+                }
+                else if(name.equals("도동서원")){
+                    Drawable drawable = getResources().getDrawable(R.drawable.cau3);
+                    imageView.setImageDrawable(drawable);
+                }
+                else {
+                    Drawable drawable = getResources().getDrawable(R.drawable.cau4);
+                    imageView.setImageDrawable(drawable);
+                }
+
+
+
+
 
                 // Log.d(TAG, id + ", " + name + ", " + addr);
 

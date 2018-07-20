@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2EEEE"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/projectName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/smartdocent" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/backbtn" />
+
+        <ImageButton
+            android:id="@+id/myStamp"
+            android:layout_width="wrap_content"
+            android:layout_height="65dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mystamp" />
+
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#636363" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:id="@+id/stampArea">
+        </Spinner>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/qrExpl"
+            android:textSize="10sp"
+            android:layout_weight="10"
+            android:gravity="center" />
+
+        <!--<GridView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:numColumns="4"-->
+        <!--android:gravity="center"-->
+        <!--android:id="@+id/stampView">-->
+
+        <!--</GridView>-->
+
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#636363" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="435dp"
+        android:orientation="horizontal">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sdfsdf">
+                <ImageView
+                    android:id="@+id/stempview1"
+                    android:layout_width="193dp"
+                    android:layout_height="249dp"
+                    android:layout_toRightOf="@id/Route4"
+                    android:src="@drawable/stampview" />
+                <TextView
+                    android:id="@+id/stampn1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/stempview1"
+                    android:layout_alignLeft="@id/stempview1"
+                    android:layout_alignRight="@id/stempview1"
+                    android:layout_alignTop="@id/stempview1"
+                    android:gravity="center"
+                    android:text="문화재 이름"
+                    android:layout_marginTop="190dp"
+                    android:textColor="#907B72"
+                    android:textSize="30dp" />
+
+                <ImageView
+                    android:id="@+id/stempview2"
+                    android:layout_width="193dp"
+                    android:layout_height="249dp"
+                    android:layout_toRightOf="@+id/stempview1"
+                    android:src="@drawable/stampview" />
+                <TextView
+                    android:id="@+id/stampn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/stempview2"
+                    android:layout_alignLeft="@id/stempview2"
+                    android:layout_alignRight="@id/stempview2"
+                    android:layout_alignTop="@id/stempview2"
+                    android:gravity="center"
+                    android:text="문화재 이름"
+                    android:layout_marginTop="190dp"
+                    android:textColor="#907B72"
+                    android:textSize="30dp" />
+                <ImageView
+                    android:id="@+id/stempview3"
+                    android:layout_width="193dp"
+                    android:layout_height="249dp"
+                    android:layout_below="@+id/stempview1"
+                    android:layout_alignLeft="@+id/stempview1"
+                    android:src="@drawable/stampview" />
+                <TextView
+                    android:id="@+id/stampn3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/stempview3"
+                    android:layout_alignLeft="@id/stempview3"
+                    android:layout_alignRight="@id/stempview3"
+                    android:layout_alignTop="@id/stempview3"
+                    android:gravity="center"
+                    android:text="문화재 이름"
+                    android:layout_marginTop="190dp"
+                    android:textColor="#907B72"
+                    android:textSize="30dp" />
+
+                <ImageView
+                    android:id="@+id/stempview4"
+                    android:layout_width="193dp"
+                    android:layout_height="249dp"
+                    android:layout_toRightOf="@+id/stempview3"
+                    android:layout_alignBottom="@+id/stempview3"
+                    android:src="@drawable/stampview" />
+                <TextView
+                    android:id="@+id/stampn4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/stempview4"
+                    android:layout_alignLeft="@id/stempview4"
+                    android:layout_alignRight="@id/stempview4"
+                    android:layout_alignTop="@id/stempview4"
+                    android:gravity="center"
+                    android:text="문화재 이름"
+                    android:layout_marginTop="190dp"
+                    android:textColor="#907B72"
+                    android:textSize="30dp" />
+            </RelativeLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/underline"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:background="#000000" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="true"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/cultureBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/culture"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter" />
+
+
+        <ImageButton
+            android:id="@+id/myPageBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_weight="3"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mypage" />
+
+    </LinearLayout>
+
+</LinearLayout>

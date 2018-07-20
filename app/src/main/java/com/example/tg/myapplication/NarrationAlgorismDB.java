@@ -759,20 +759,19 @@ public class NarrationAlgorismDB {
             if(!pri.equals("null") && !pri.equals("-1")) {
                 MapsActivity.priority = Integer.valueOf(pri);
 
-                int prio = Integer.parseInt(pri);
-                ((MapsActivity)MapsActivity.mContext).nextcultural(prio);
+//                int prio = Integer.parseInt(pri);
+//                ((MapsActivity)MapsActivity.mContext).nextcultural(Integer.valueOf(pri));
 
             }else if(pri.equals("-1")){
                 // 데이터 없으면 -1(해설포인트 밖) -> 순서값 변경X -> 이전 해설포인트 순서고정
-
-                int prio = Integer.parseInt(pri);
-                ((MapsActivity)MapsActivity.mContext).nextcultural(prio);
+//                ((MapsActivity)MapsActivity.mContext).nextcultural(-1);
 
             }else{   // 순서 없으면 99 -> ar이나 qr등
                 MapsActivity.priority = 99;
+//                ((MapsActivity)MapsActivity.mContext).nextcultural(-1);
 
-                int prio = Integer.parseInt(pri);
-                ((MapsActivity)MapsActivity.mContext).nextcultural(prio);
+//                int prio = Integer.parseInt(pri);
+//                ((MapsActivity)MapsActivity.mContext).nextcultural(prio);
             }
         }catch (JSONException e){
             Log.d(TAG, "getElementResult: ", e);

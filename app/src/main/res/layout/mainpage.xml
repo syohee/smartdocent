@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F2EEEE"
     android:orientation="vertical"
     >
 
@@ -13,48 +14,43 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <ImageView
             android:id="@+id/projectName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/app_name"
-            android:textColor="#000000"
-            android:textSize="30sp"
-            android:textStyle="bold" />
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/smartdocent" />
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#000000" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="480dp"
         android:gravity="center"
         android:orientation="vertical">
 
-        <ListView
+        <!--<ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/mainList"
-            android:divider="#8C8C8C"
-            android:dividerHeight="2dp"
-            android:choiceMode="singleChoice"></ListView>
+            android:layout_height="match_parent">-->
 
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewResult">
-        </TextView>-->
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/mainList"
+                android:divider="#8C8C8C"
+                android:dividerHeight="2dp"
+                android:choiceMode="singleChoice"></ListView>
+
+            <!--<TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewResult">
+            </TextView>-->
+
+        <!--</ScrollView>-->
 
     </LinearLayout>
 
@@ -62,15 +58,21 @@
         android:id="@+id/underline"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_marginBottom="3dp"
+        android:background="#000000" />
 
-        android:layout_marginTop="8dp"
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/underline2"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:layout_marginTop="115dp"
         android:background="#000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="true"
+        android:gravity="bottom"
         android:orientation="horizontal">
 
         <ImageButton
@@ -84,17 +86,6 @@
             android:background="@android:color/transparent"
             android:scaleType="fitCenter" />
 
-        <ImageButton
-            android:id="@+id/homeBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="3"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/home"
-            android:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/myPageBtn"

@@ -3,48 +3,131 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F2EEEE"
     android:gravity="center"
     android:orientation="vertical">
-    <TextView
+
+    <ImageView
         android:id="@+id/projectName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/app_name"
-        android:textColor="#000000"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/smartdocent" />
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+            <ImageView
+                android:id="@+id/Route1"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/indexnumber" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/Route1"
+                android:layout_alignLeft="@id/Route1"
+                android:layout_alignRight="@id/Route1"
+                android:layout_alignTop="@id/Route1"
+                android:gravity="center"
+                android:text="1. 달동산"
+                android:textColor="#ffffff"
+                android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/Route2"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/Route1"
+                android:src="@drawable/indexnumber" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Route2"
+            android:layout_alignLeft="@id/Route2"
+            android:layout_alignRight="@id/Route2"
+            android:layout_alignTop="@id/Route2"
+            android:gravity="center"
+            android:text="2. 징청각"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/Route3"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/Route2"
+                android:src="@drawable/indexnumber" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Route3"
+            android:layout_alignLeft="@id/Route3"
+            android:layout_alignRight="@id/Route3"
+            android:layout_alignTop="@id/Route3"
+            android:gravity="center"
+            android:text="3. 선정다리"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/Route4"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/Route3"
+                android:src="@drawable/indexnumber" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Route4"
+            android:layout_alignLeft="@id/Route4"
+            android:layout_alignRight="@id/Route4"
+            android:layout_alignTop="@id/Route4"
+            android:gravity="center"
+            android:text="4. 선화당"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+
+            <ImageView
+                android:id="@+id/Route5"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/Route4"
+                android:src="@drawable/indexnumber" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Route5"
+            android:layout_alignLeft="@id/Route5"
+            android:layout_alignRight="@id/Route5"
+            android:layout_alignTop="@id/Route5"
+            android:gravity="center"
+            android:text="4. 측우대"
+            android:textColor="#ffffff"
+            android:textSize="20dp" />
+    </RelativeLayout>
+    </HorizontalScrollView>
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:background="#000000" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/Route"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="20dp"
-            android:text="영진전문대학"
-            android:textColor="#000000"/>
-        <android.support.v4.view.ViewPager
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#000000" />
-    </LinearLayout>
 
-<LinearLayout
+
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="300dp">
     <fragment xmlns:tools="http://schemas.android.com/tools"
@@ -61,32 +144,45 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center">
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="50dp"
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="74dp"
             android:text="정지"
+            android:scaleType="fitXY"
+            android:background="#00000000"
+            android:src="@drawable/stop"
             android:id="@+id/btn_play"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/button"
-            android:layout_toEndOf="@+id/button" />
+            android:layout_marginRight="15dp"/>
 
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="50dp"
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="74dp"
+            android:src="@drawable/play"
+            android:scaleType="fitXY"
+            android:background="#00000000"
             android:text="재생"
             android:id="@+id/button3"
-            android:layout_alignParentBottom="true" />
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="15dp"/>
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="74dp"
+            android:scaleType="fitXY"
             android:text="AR"
+            android:background="#00000000"
+            android:src="@drawable/ar"
             android:id="@+id/arBtn"
-            android:layout_alignParentBottom="true" />
-        <Button
-            android:layout_width="70dp"
-            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="15dp"/>
+        <ImageButton
+            android:layout_width="75dp"
+            android:layout_height="74dp"
+            android:scaleType="fitXY"
             android:text="QR"
+            android:background="#00000000"
+            android:src="@drawable/qr"
             android:id="@+id/qrBtn"
             android:layout_alignParentBottom="true" />
     </LinearLayout>
@@ -104,18 +200,6 @@
         android:src="@drawable/culture"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter" />
-
-    <ImageButton
-        android:id="@+id/hoBtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_weight="3"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="8dp"
-        android:scaleType="fitCenter"
-        android:background="@android:color/transparent"
-        android:src="@drawable/home"
-        android:tint="@android:color/black" />
 
     <ImageButton
         android:id="@+id/myPaBtn"

@@ -2,13 +2,15 @@ package com.example.tg.myapplication;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -21,7 +23,8 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.*;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -35,11 +38,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_NAME = "name";
     private static final String TAG_IMG = "img";
     private static final String TAG_ADDR = "addr";
+    private static final String TAG_ADD = "addr";
 
     private TextView mTextViewResult;
     ArrayList<HashMap<String, String>> mArrayList;
     ListView mListView;
     String mJsonString;
+
+    Intent intent;
+    int lang_code;
+    String user_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +57,23 @@ public class MainActivity extends AppCompatActivity {
 
         // mTextViewResult =   (TextView)findViewById(R.id.textViewResult);
         mListView   =   (ListView)findViewById(R.id.mainList);
+        intent = getIntent();
+        lang_code = intent.getIntExtra("lang_code", lang_code);
+        user_id = intent.getStringExtra("id");
+
+        Log.d(TAG, "user_id -> " + user_id);
+
         mArrayList  =   new ArrayList<>();
 
         GetData task = new GetData();
-        task.execute("http://35.184.38.112/getMainList.php");
-
-        /*TextView culId   =   (TextView)findViewById(R.id.culId);
-        culId.setVisibility(View.INVISIBLE);*/
-
+        task.execute("http://35.184.38.112/getMainList.php", String.valueOf(lang_code));
 
         // 문화재 페이지 버튼
         ImageButton cultureBtn = (ImageButton) findViewById(R.id.cultureBtn);
         cultureBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent cultureIntent = new Intent(MainActivity.this, CultureActivity.class);
+                Intent cultureIntent = new Intent(MainActivity.this, MainActivity.class);
+                cultureIntent.putExtra("lang_code", lang_code);
                 startActivity(cultureIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
@@ -71,7 +83,16 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton myPageBtn = (ImageButton) findViewById(R.id.myPageBtn);
         myPageBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent myPageIntent = new Intent(MainActivity.this, MyPageActivity.class);
+                if(user_id != null) {
+                    Intent myPageIntent = new Intent(MainActivity.this, MyPageActivity.class);
+                    myPageIntent.putExtra("lang_code", lang_code);
+                    myPageIntent.putExtra("id", user_id);
+                    startActivity(myPageIntent);
+                    overridePendingTransition(R.anim.fade, R.anim.hold);
+                }
+                Intent myPageIntent = new Intent(MainActivity.this, LoginPageActivity.class);
+                myPageIntent.putExtra("lang_code", lang_code);
+                myPageIntent.putExtra("id", user_id);
                 startActivity(myPageIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
@@ -109,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             String serverURL = strings[0];
+            String langCode = strings[1];
+
+            Log.d(TAG, "lang_code -> " + langCode);
+
+            String post = "lang_code=" + langCode;
 
             try {
                 URL url =   new URL(serverURL);
@@ -116,7 +142,13 @@ public class MainActivity extends AppCompatActivity {
 
                 con.setReadTimeout(5000);
                 con.setConnectTimeout(5000);
+                con.setRequestMethod("POST");
                 con.connect();
+
+                OutputStream outputStream = con.getOutputStream();
+                outputStream.write(post.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
 
                 int responseStatusCode  =   con.getResponseCode();
                 Log.d(TAG, "response code -> " + responseStatusCode);
@@ -162,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
                 String id = item.getString(TAG_ID);
                 String name = item.getString(TAG_NAME);
                 String img = item.getString(TAG_IMG);
-                String addr = item.getString(TAG_ADDR);
+
+
+                String addr = item.getString(TAG_ADD);
 
                 // Log.d(TAG, id + ", " + name + ", " + addr);
 
@@ -177,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             ListAdapter adapter = new SimpleAdapter(MainActivity.this, mArrayList, R.layout.cul_listview,
-                    new String[]{TAG_NAME, TAG_IMG, TAG_ADDR}, new int[] {R.id.culName, R.id.culImg, R.id.culAddr});
+                    new String[]{TAG_NAME, TAG_IMG, TAG_ADDR }, new int[] {R.id.culName, R.id.culImg, R.id.culAddr});
 
             mListView.setAdapter(adapter);
 
@@ -186,7 +220,42 @@ public class MainActivity extends AppCompatActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent cul_view = new Intent(MainActivity.this, CultureViewActivity.class);
                     cul_view.putExtra("cul_view_id", mArrayList.get(position).get(TAG_ID));
+                    cul_view.putExtra("lang_code", lang_code);
+                    cul_view.putExtra("id", user_id);
                     startActivity(cul_view);
+                }
+            });
+
+
+            //SimpleAdapter사용할때 이미지 입히는 작업이지만 안되서 하드코딩함
+            ((SimpleAdapter)adapter).setViewBinder(new SimpleAdapter.ViewBinder() {
+                @Override
+                public boolean setViewValue(View view, Object o, String s) {
+                    if(view.getId() == R.id.culImg){
+                        ImageView imageView = (ImageView)view;
+//                        Drawable drawable = (Drawable)o;
+                        if(s.equals("yyy.jpg")) {
+                            Drawable drawable = getResources().getDrawable(R.drawable.cau1);
+                            imageView.setImageDrawable(drawable);
+                        }
+                        else if(s.equals("cau2.jpg")){
+                            Drawable drawable = getResources().getDrawable(R.drawable.cau2);
+                            imageView.setImageDrawable(drawable);
+
+                        }
+                        else if(s.equals("cau3.jpg")){
+                            Drawable drawable = getResources().getDrawable(R.drawable.cau3);
+                            imageView.setImageDrawable(drawable);
+
+                        }
+                        else{
+                            Drawable drawable = getResources().getDrawable(R.drawable.cau4);
+                            imageView.setImageDrawable(drawable);
+                        }
+
+                        return true;
+                    }
+                    return false;
                 }
             });
 

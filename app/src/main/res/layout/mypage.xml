@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F2EEEE"
     android:orientation="vertical"
     android:gravity="center">
 
@@ -12,131 +13,145 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <ImageView
             android:id="@+id/projectName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/app_name"
-            android:textColor="#000000"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="#000000" />
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/smartdocent" />
 
     </LinearLayout>
 
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:layout_marginTop="45dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:orientation="vertical"
+            android:layout_weight="2"
+            android:layout_marginTop="25dp"
+            android:gravity="center"
+            android:background="#FFFFFF">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="35sp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:id="@+id/userName"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="회원님"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="25dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/useredit"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textSize="20sp"
+                    android:text="회원정보수정"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="15dp"
+                    android:src="@drawable/logout"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textSize="20sp"
+                    android:text="로그아웃"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="85dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:id="@+id/stampBtn"
+            android:src="@drawable/mystampbtn" />
 
-            <!--<ImageView
-                android:id="@+id/idImg"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/id"
-                tools:layout_editor_absoluteX="38dp"
-                tools:layout_editor_absoluteY="111dp" />-->
-
-            <TextView
-                android:id="@+id/idText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/idText" />
-
-            <EditText
-                android:id="@+id/id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPersonName" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <!--<ImageView
-                android:id="@+id/pwImg"
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/pw"
-                tools:layout_editor_absoluteX="38dp"
-                tools:layout_editor_absoluteY="177dp" />-->
-
-            <TextView
-                android:id="@+id/pwText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pwText" />
-
-            <EditText
-                android:id="@+id/pw"
-                android:layout_width="228dp"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <Button
-            android:id="@+id/loginBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/loginBtn"
-            android:textSize="15sp" />
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/langSetBtn"
+            android:src="@drawable/langset"/>
 
-        <Button
-            android:id="@+id/joinBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/joinBtn"
-            android:textSize="15sp" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/underline"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="100dp"
         android:background="#000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:baselineAligned="true"
+        android:gravity="bottom"
         android:orientation="horizontal">
 
         <ImageButton
@@ -150,17 +165,6 @@
             android:background="@android:color/transparent"
             android:scaleType="fitCenter" />
 
-        <ImageButton
-            android:id="@+id/homeBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_weight="3"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="8dp"
-            android:scaleType="fitCenter"
-            android:background="@android:color/transparent"
-            android:src="@drawable/home"
-            android:tint="@android:color/black" />
 
         <ImageButton
             android:id="@+id/myPageBtn"

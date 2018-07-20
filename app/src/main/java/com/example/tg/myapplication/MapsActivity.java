@@ -16,21 +16,19 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -46,10 +44,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -67,10 +61,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static GoogleMap mMap;
     private static final String TAG = MapsActivity.class.getSimpleName();
 
-    public String cultural_code = "1";      // 1차 문화재 코드
+    public String cultural_code = "8";      // 1차 문화재 코드
     public String language_code = "1";      // 언어코드
 
-    private Button b2, b3, b4, b5;          // 재생 정지 버튼*
+    private ImageButton b2, b3, b4, b5;          // 재생 정지 버튼*
     private ImageButton homeBt, currentBt, mypageBt;
     private static MediaPlayer music; // 스트리밍 객체 생성
     static String url = "http://35.184.38.112/";
@@ -107,25 +101,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     TextView tv_marker;
     static String route;
     static String startRoute = "순서 : ";
+    Intent intent;
+    String id;
+    int lang_code;
 
     public static Context mContext;         // 현재 엑티비티 정보를 가져옴
+
+    private static int Sat = 0;  // 일단 마크 찍을때 상태 확인
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        b2 = (Button) findViewById(R.id.btn_play); //  정지 버튼 참조
-        b3 = (Button) findViewById(R.id.button3);  // 재생 버튼 참조
-        b4 = (Button) findViewById(R.id.arBtn);
-        b5 = (Button) findViewById(R.id.qrBtn);
-        homeBt = (ImageButton) findViewById(R.id.hoBtn);
+        b2 = (ImageButton) findViewById(R.id.btn_play); //  정지 버튼 참조
+        b3 = (ImageButton) findViewById(R.id.button3);  // 재생 버튼 참조
+        b4 = (ImageButton) findViewById(R.id.arBtn);
+        b5 = (ImageButton) findViewById(R.id.qrBtn);
         currentBt = (ImageButton) findViewById(R.id.cultBtn);
         mypageBt = (ImageButton) findViewById(R.id.myPaBtn);
         b3.setEnabled(false); // 재생버튼 비활성화
         b2.setEnabled(true); // 정지버튼 활성화
         b4.setEnabled(false); //ar버튼 비활성화
-        b5.setEnabled(false); //qr버튼 비활성화
+        b5.setEnabled(true); //qr버튼 비활성화
         nadb = new NarrationAlgorismDB();
+        intent = getIntent();
+        id = intent.getStringExtra("id");
+        lang_code = intent.getIntExtra("lang_code", lang_code);
+
+        Log.d(TAG, "lang_code -> " + lang_code + ", user_id -> " + id);
 
         // 현재 문화재 코드
         // 선택된 언어 코드
@@ -176,20 +179,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 b5.setEnabled(false);
-            }
-        });
-        homeBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(homeIntent);
+                Intent qrIntent = new Intent(getApplicationContext(), ScanActivity.class);
+                qrIntent.putExtra("id", id);
+                qrIntent.putExtra("lang_code", lang_code);
+                startActivity(qrIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
         });
         currentBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cultureIntent = new Intent(getApplicationContext(), CultureActivity.class);
+                Intent cultureIntent = new Intent(getApplicationContext(), MainActivity.class);
+                cultureIntent.putExtra("lang_code", lang_code);
                 startActivity(cultureIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
@@ -198,19 +199,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Intent myPageIntent = new Intent(getApplicationContext(), MyPageActivity.class);
+                myPageIntent.putExtra("lang_code", lang_code);
+                myPageIntent.putExtra("id", id);
                 startActivity(myPageIntent);
                 overridePendingTransition(R.anim.fade, R.anim.hold);
             }
         });
 
-        TextView Route;
-        test Culture;
-        Route = (TextView) findViewById(R.id.Route); // 경로보여주기
-
-        Culture = new test();
-        route = Culture.test("1");
-        setRoute(route);
-        Route.setText(startRoute);
 
         mContext = this;
     }
@@ -408,12 +403,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (!prePoint.equals(nowPoint)) {
                 Log.d(TAG, "narration_algorism: 사용자가 새로운 해설포인트에 도착했습니다. 포인트 순서 : " + priority);
 
-                if(prepriority + 1 != priority){
+                if (prepriority + 1 != priority) {
                     Log.d(TAG, "narration_algorism: 사용자가 경로를 이탈했습니다.");
                     userStatus = "off_course";
                     // 경로 이탈 멘트 가져오기
                     getWarning();
-                }else{
+                } else {
                     // 현재 해설포인트 해설 파일 가져오기
                     getFileNameNow();
                 }
@@ -434,9 +429,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
 
             } else {
-                Log.d(TAG, "narration_algorism: 사용자가 동일한 해설포인트 입니다. 포인트 순서 : " + priority);
+                Log.d(TAG, "narration_algorism: 사용자가 동일한 해설포인트 입니다. 포인트 순서 : " + priority + ", userStatus : " + userStatus);
                 if (userStatus.equals("off_course")) {
-                    getFileNameNow();
+
                     if (status.equals("play")) {
                         Log.d(TAG, "narration_algorism: 현재 해설중인 파일의 종료지점을 찾습니다.");
                         // 현재 재생시간 < min(종료지점) 쿼리
@@ -447,8 +442,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Log.d(TAG, "narration_algorism: 해설이 일시정지 중입니다.");
                     } else if (status.equals("stop")) {
                         Log.d(TAG, "narration_algorism: 해설이 종료 상태 입니다.");
-                        playExpl();
-                        userStatus = "";
+
+                        if(fileChange.equals("no")){
+                            getFileNameNow();
+                            playExpl();
+                            userStatus = "";
+                        }
                     }
                 }else{
                     if(status.equals("play")){}
@@ -577,6 +576,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setCustomMarkerView();
         //해설포인트
         getExplPoint();
+        gooleImagmap();
         // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
         // Get the current location of the device and set the position of the map.
@@ -588,6 +588,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         marker_root_view = LayoutInflater.from(this).inflate(R.layout.maker_layout, null);
         tv_marker = (TextView) marker_root_view.findViewById(R.id.tv_marker);
     }
+    //구글지도에 이미지 입히기
+
+    private void  gooleImagmap(){
+
+        LatLng yd = new LatLng(35.871664, 128.592114);
+        LatLng yj = new LatLng(35.871683, 128.592158);
+        mMap.addMarker(new MarkerOptions().position(yd).title("")
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(resizeMapIcons("buttom2", 855, 700
+                        )))).setZIndex(0);
+
+        mMap.addMarker(new MarkerOptions().position(yj).title("")
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(resizeMapIcons("gil2", 715, 680
+                         )))).setZIndex(1);
+        mMap.addMarker(new MarkerOptions().position(yj).title("")
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(resizeMapIcons("tate2", 705, 680
+                        )))).setZIndex(1);
+
+
+
+
+
+
+    }
+
     // 마커, 원 추가
     public void onAddMarker() {
         ArrayList<HashMap<String, String>> explPointList =  nadb.mExplPointList;
@@ -604,32 +631,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     tv_marker.setText(pri);
                     mMap.addMarker(new MarkerOptions().position(yj).title(pri)
                             .icon(BitmapDescriptorFactory
-                            .fromBitmap(createDrawableFromView(this, marker_root_view))));
+                            .fromBitmap(createDrawableFromView(this, marker_root_view)))).setZIndex(2);
                     CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
                             .radius(10)        // 반지름 단위 : m
                             .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
-                            .fillColor(Color.parseColor("#B2CCFF"));  // 배경색
-                    mMap.addCircle(circle); // 반경 추가
+                            .fillColor(Color.parseColor("#B2CCFF")).zIndex(99);  // 배경색
+                    mMap.addCircle(circle).setZIndex(99); // 반경 추가
                 }else if(ele.equals("4")){  // information
                     mMap.addMarker(new MarkerOptions().position(yj).title("information")
                         .icon(BitmapDescriptorFactory
                         .fromBitmap(resizeMapIcons("information", 70, 70
-                        ))));
+                        )))).setZIndex(2);
                 }else if(ele.equals("3")){  // ar
                     mMap.addMarker(new MarkerOptions().position(yj).title("AR")
                         .icon(BitmapDescriptorFactory
                         .fromBitmap(resizeMapIcons("aricon", 70, 70
-                        ))));
+                        )))).setZIndex(2);
                 }else if(ele.equals("2")){  // qr
                     mMap.addMarker(new MarkerOptions().position(yj).title("QR")
                         .icon(BitmapDescriptorFactory
-                        .fromBitmap(resizeMapIcons("qricon", 50, 50
-                        ))));
+                        .fromBitmap(resizeMapIcons("qrm", 70, 70
+                        )))).setZIndex(2);
                 }else if(ele.equals("1")){  // 화장실
                     mMap.addMarker(new MarkerOptions().position(yj).title("restroom")
                         .icon(BitmapDescriptorFactory
-                        .fromBitmap(resizeMapIcons("restroom", 70, 70
-                        ))));
+                        .fromBitmap(resizeMapIcons("toiletm", 70, 70
+                        )))).setZIndex(2);
                 }
             }
         }
@@ -660,7 +687,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //사용자 위도, 경도 저장
                             userLat = Double.toString(mLastKnownLocation.getLatitude());
                             userLon = Double.toString(mLastKnownLocation.getLongitude());
-//                            Log.d(TAG, "onComplete: 현재 좌표 : Lat - " + userLat + ", Lon - " + userLon);
+                            Log.d(TAG, "onComplete: 현재 좌표 : Lat - " + userLat + ", Lon - " + userLon);
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -724,7 +751,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             alertDialog.setPositiveButton("허가",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(com.example.tg.myapplication.MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
 
                         }
                     });
@@ -761,63 +788,84 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     // 문화재 경로
-    public void setRoute(String mJsonString){
-        String TAG = "phpquerytest";
-        final String TAG_JSON="webnautes";
-        final String TAG_cultural_name = "cultural_name";
-        try {
-            JSONObject jsonObject = new JSONObject(mJsonString);
-            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
-
-
-            for(int i=0;i<jsonArray.length();i++){
-                JSONObject item = jsonArray.getJSONObject(i);
-                startRoute += i+1 +". " + item.getString(TAG_cultural_name) +" ";
-
-            }
-
-        } catch (JSONException e) {
-            Log.d(TAG, "showResult : ", e);
-        }
-
-    }
+//    public void setRoute(String mJsonString){
+//        String TAG = "phpquerytest";
+//        final String TAG_JSON="webnautes";
+//        final String TAG_cultural_name = "cultural_name";
+//        try {
+//            JSONObject jsonObject = new JSONObject(mJsonString);
+//            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+//
+//
+//            for(int i=0;i<jsonArray.length();i++){
+//                JSONObject item = jsonArray.getJSONObject(i);
+//                startRoute += i+1 +". " + item.getString(TAG_cultural_name) +" ";
+//
+//            }
+//
+//        } catch (JSONException e) {
+//            Log.d(TAG, "showResult : ", e);
+//        }
+//
+//    }
 
     //현재 문화재 반경 빨간색 변경
-    public void nextcultural(int priority){
+    public void nextcultural(int priority) {
         GoogleMap googleMap = mMap;
-        ArrayList<HashMap<String, String>> explPointList =  nadb.mExplPointList;
-        for (HashMap explPoint : explPointList) {
-            Double lat = Double.parseDouble(explPoint.get("latitude").toString());
-            Double lon = Double.parseDouble(explPoint.get("longitude").toString());
-            String ele = explPoint.get("element_code").toString();
-            String pri = explPoint.get("element_priority").toString();
-            Log.d(TAG, "onAddMarker: lat : " + lat + ", lon : " + lon);
-            LatLng yj = new LatLng(lat, lon);
-            if(pri.equals(String.valueOf(priority)) && ele.equals("5")){
-                tv_marker.setText(pri);
-                googleMap.addMarker(new MarkerOptions().position(yj).title(pri)
-                        .icon(BitmapDescriptorFactory
-                                .fromBitmap(createDrawableFromView(this, marker_root_view))));
-                CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
-                        .radius(10)        // 반지름 단위 : m
-                        .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
-                        .fillColor(Color.parseColor("#ff0000"));  // 배경색
-                googleMap.addCircle(circle); // 반경 추가
-            }
-            else if(ele.equals("5")){
-                tv_marker.setText(pri);
-                mMap.addMarker(new MarkerOptions().position(yj).title(pri)
-                        .icon(BitmapDescriptorFactory
-                                .fromBitmap(createDrawableFromView(this, marker_root_view))));
-                CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
-                        .radius(10)        // 반지름 단위 : m
-                        .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
-                        .fillColor(Color.parseColor("#B2CCFF"));  // 배경색
-                mMap.addCircle(circle); // 반경 추가
+        ArrayList<HashMap<String, String>> explPointList = nadb.mExplPointList;
 
+
+        if (priority > -1 && Sat == 1) {
+            for (HashMap explPoint : explPointList) {
+                Double lat = Double.parseDouble(explPoint.get("latitude").toString());
+                Double lon = Double.parseDouble(explPoint.get("longitude").toString());
+                String ele = explPoint.get("element_code").toString();
+                String pri = explPoint.get("element_priority").toString();
+//            Log.d(TAG, "onAddMarker: lat : " + lat + ", lon : " + lon);
+                LatLng yj = new LatLng(lat, lon);
+
+
+                if (pri.equals(String.valueOf(priority)) && ele.equals("5")) {
+                    tv_marker.setText(pri);
+                    googleMap.addMarker(new MarkerOptions().position(yj).title(pri)
+                            .icon(BitmapDescriptorFactory
+                                    .fromBitmap(createDrawableFromView(this, marker_root_view)))).setZIndex(2);
+                    CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
+                            .radius(10)        // 반지름 단위 : m
+                            .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
+                            .fillColor(Color.parseColor("#ff0000")).zIndex(2);  // 배경색
+                    googleMap.addCircle(circle).setZIndex(2); // 반경 추가
+                }
             }
+            Sat = 0;
         }
+        else if (Sat ==0){
+            for (HashMap explPoint : explPointList) {
+                Double lat = Double.parseDouble(explPoint.get("latitude").toString());
+                Double lon = Double.parseDouble(explPoint.get("longitude").toString());
+                String ele = explPoint.get("element_code").toString();
+                String pri = explPoint.get("element_priority").toString();
+                LatLng yj = new LatLng(lat, lon);
+                if (ele.equals("5")) {
+                    tv_marker.setText(pri);
+                    mMap.addMarker(new MarkerOptions().position(yj).title(pri)
+                            .icon(BitmapDescriptorFactory
+                                    .fromBitmap(createDrawableFromView(this, marker_root_view))));
+                    CircleOptions circle = new CircleOptions().center(yj)  // yj가 원점
+                            .radius(10)        // 반지름 단위 : m
+                            .strokeWidth(0f)    // 선 너비 / 0f : 선 없음
+                            .fillColor(Color.parseColor("#B2CCFF")).zIndex(2);  // 배경색
+                    mMap.addCircle(circle).setZIndex(2); // 반경 추가
+
+                }
+            }
+
+            Sat = 1;
+        }
+
     }
+
+
 
     public void onConnected(@Nullable Bundle bundle) {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
